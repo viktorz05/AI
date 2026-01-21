@@ -1,0 +1,75 @@
+<robot name="myrobot">
+    <link name="base_link">
+        <visual>
+            <origin xyz = "0 0 0" rpy =" 0 0 0"/>
+            <geometry>
+                <box size= "0.3 0.3 0.3"/>
+            </geometry>
+            <material name="Red1">
+                <color rgba="1.0 0.0 0.0 1.0"/>
+                
+            </material>
+        </visual>
+    </link>
+
+    <link name="torso_link">
+        <visual>
+            <origin xyz = "0 0 0" rpy =" 0 0 0"/>
+            <geometry>
+                <box size= "0.2 0.2 0.3"/>
+            </geometry>
+            <material name="Yellow1">
+                <color rgba="1.0 1.0 0.0 1.0"/>
+                
+            </material>
+        </visual>
+    </link>
+
+    <link name="arm_link">
+        <visual>
+            <origin xyz = "0 0 0" rpy =" 0 0 0"/>
+            <geometry>
+                <box size= "0.15 0.15 0.6"/>
+            </geometry>
+            <material name="Yellow1">
+                <color rgba="0.0 1.0 0.0 1.0"/> 
+            </material>
+        </visual>
+    </link>
+
+        <link name="short_arm_link">
+        <visual>
+            <origin xyz = "0 0 0" rpy =" 0 0 0"/>
+            <geometry>
+                <box size= "0.1 0.1 0.3"/>
+            </geometry>
+            <material name="Blue1">
+                <color rgba="0.0 0.0 1.0 1.0"/>
+            </material>
+        </visual>
+    </link>
+
+    <joint name="torso_joint" type="revolute">
+        <parent link="base_link"/>
+        <child link="torso_link"/>
+        <origin xyz = "0 0 0.3" rpy =" 0 0 0"/>
+        <axis xyz="0.0 0.0 1.0"/>
+        <limit lower="-3.1416" upper="3.1416" effort="10.0" velocity="3.0"/>    
+    </joint>
+
+    <joint name="arm_joint" type="revolute">
+        <parent link="torso_link"/>
+        <child link="arm_link"/>
+        <origin xyz = "0 0 0.25" rpy =" 0 0 0"/>
+        <axis xyz="0.0 1.0 0.0"/>
+        <limit lower="-1.57" upper="1.57" effort="10.0" velocity="3.0"/>    
+    </joint>
+
+    <joint name="short_arm_joint" type="revolute">
+        <parent link="arm_link"/>
+        <child link="short_arm_link"/>
+        <origin xyz = "0 0 0.35" rpy =" 0 0 0"/>
+        <axis xyz="0.0 1.0 0.0"/>
+        <limit lower="-1.57" upper="1.57" effort="10.0" velocity="3.0"/>    
+    </joint>
+</robot>
