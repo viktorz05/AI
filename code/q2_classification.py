@@ -1,16 +1,20 @@
 import numpy as np
 import pandas as pd
-
+import matplotlib.pyplot as plt
 # -----------------------------
 # 1) Load your TSV dataset
 # -----------------------------
 DATA_PATH = "car-dataset.tsv"  # You need to specify the path to the dataset (default: in current directory)
 df = pd.read_csv(DATA_PATH, sep="\t")
 
+df["mpg"].plot(kind = 'hist', xlabel='mpg')
+threshold = df["mpg"].median()
+plt.show()
 # -----------------------------
 # 2) Create binary labels
 # -----------------------------
-MPG_THRESHOLD = 0.0   # <-- put your Q1.a threshold here
+MPG_THRESHOLD = threshold   # <-- put your Q1.a threshold here
+print(MPG_THRESHOLD)
 y = (df["mpg"].astype(float) >= MPG_THRESHOLD).astype(int).to_numpy()
 
 # -----------------------------
