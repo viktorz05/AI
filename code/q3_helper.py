@@ -87,10 +87,21 @@ def sgd(X, y, J, dJ, w0, step_size_fn, max_iter, seed=42):
 def make_ridge_J_dJ(lam):
     # Implement the following functions
     def J(Xi, yi, w): # the function will change
-        return 0.0 
+        residual = (Xi.T @ w) - yi
+        trainLoss = 0.5 * (residual ** 2)
+        
+        reg = (lam / 2) * np.sum(w[1:, :] ** 2)
+        return float(trainLoss + reg)
 
     def dJ(Xi, yi, w): # the function will change
-        return np.zeros_like(w)
+
+        residual = (Xi.T @ w) - yi
+        grad = residual * Xi  
+        
+        reg= np.zeros_like(w)
+        reg[1:, :] = lam * w[1:, :]
+        
+        return grad + reg
 
     return J, dJ
 

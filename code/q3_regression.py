@@ -41,12 +41,18 @@ folds = kfold_indices(len(df), k=10, seed=42)
 # -----------------------------
 def rmse(y_true, y_pred):
     # Implement rmse metric
-    return 1 # this line will change
+    actual = np.array(y_true)
+    predicted = np.array(y_pred)
+    rmse = np.sqrt(np.mean((actual - predicted) ** 2))
+    return rmse
 
 
 def mae(y_true, y_pred):
     # Implement mae metric
-    return 1 # this line will change
+    actual = np.array(y_true)
+    predicted = np.array(y_pred)
+    mae = np.mean(np.abs((actual - predicted)))
+    return mae
 
 print("\nRidge Regression (SGD) — 10-fold CV\n")
 print("lambda |  RMSE  |  MAE")

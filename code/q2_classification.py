@@ -37,6 +37,21 @@ feature_plan = { # change the features preporcessing based on your answer to Q1.
 def distance(x1, x2):
     return np.sqrt(np.sum((x1-x2) ** 2, axis=1))
 
+def confusion_matrix(y_true, y_pred):
+
+    actual = np.array(y_true)
+    predicted = np.array(y_pred)
+
+    labels = np.unique(np.concatenate([actual, predicted]))
+    label_to_idx = {l: i for i, l in enumerate(labels)}
+
+    m = np.zeros((len(labels), len(labels)), dtype=int)
+
+    for a, p in zip(actual, predicted):
+        m[label_to_idx[a], label_to_idx[p]] += 1
+
+    return m
+
 def fit_preprocess(train_df):
     params = {"standard": {}, "onehot": {}}
 
@@ -95,12 +110,25 @@ def knn_predict(X_train, y_train, X_test, k):
 # 5) Metrics
 # -----------------------------
 def accuracy(y_true, y_pred):
-    return 1
     
-    # fp = tp = 0
+    # actual = np.array(y_true)
+    # predicted = np.array(y_pred)
+
+    # return (actual == predicted).sum() / float(len(actual))
+    return (y_pred == y_true).sum() / float(len(y_true))
+    
+    
 def f1(y_true, y_pred):
     # Implement f1 metric
-    return 1 # this line will change
+  
+    tp = np.sum((y_true == 1) & (y_pred == 1))
+    fn = np.sum((y_true == 1) & (y_pred == 0))
+    fp = np.sum((y_true == 0) & (y_pred == 1))
+
+    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+
+    return 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
 
 # -----------------------------
 # 6) 10-fold CV
@@ -143,9 +171,3 @@ for k in k_values:
 
     print(f"{k:2d} |   {np.mean(accs):.3f}   |   {np.mean(f1s):.3f}")
 
-
-
-def confusion_matrix(y_true, y_pred):
-    actual = pd.Series(y_true, name='Actual')
-    pred = pd.Series(y_pred, name='Predicted')
-    return pd.crosstab(actual, pred, rownames=['Actual'], colnames=['Predicted'], margins=True)
