@@ -8,8 +8,12 @@ DATA_PATH = "car-dataset.tsv"  # You need to specify the path to the dataset (de
 df = pd.read_csv(DATA_PATH, sep="\t")
 
 df["mpg"].plot(kind = 'hist', xlabel='mpg')
+
+
 threshold = df["mpg"].median()
-plt.show()
+# plt.show()
+# df.plot.scatter(x='model_year', y='mpg')
+# plt.show()
 # -----------------------------
 # 2) Create binary labels
 # -----------------------------
@@ -21,7 +25,7 @@ y = (df["mpg"].astype(float) >= MPG_THRESHOLD).astype(int).to_numpy()
 # 3) Preprocessing
 # -----------------------------
 feature_plan = { # change the features preporcessing based on your answer to Q1.b
-    "cylinders": "standard",
+    "cylinders": "one-hot",
     "displacement": "standard",
     "horsepower": "standard",
     "weight": "standard",
@@ -30,6 +34,8 @@ feature_plan = { # change the features preporcessing based on your answer to Q1.
     "origin": "one-hot",
     "car_name": "drop",
 }
+def distance(x1, x2):
+    return np.sqrt(np.sum((x1-x2) ** 2, axis=1))
 
 def fit_preprocess(train_df):
     params = {"standard": {}, "onehot": {}}
@@ -77,15 +83,21 @@ def knn_predict(X_train, y_train, X_test, k):
     preds = []
     for x in X_test:
         # Implement KNN Prediction
-        preds = [] # this line will change
+        dist = distance(X_train, x)
+        nn_idx = np.argpartition(dist, k)[:k]
+        nn_labels = y_train[nn_idx]
+        # for tie
+        val, counts = np.unique(nn_labels,return_counts=True)
+        preds.append(val[np.argmax(counts)])
     return np.array(preds)
 
 # -----------------------------
 # 5) Metrics
 # -----------------------------
 def accuracy(y_true, y_pred):
-    return 1 # Implement accuracy metric - this line will change
-
+    return 1
+    
+    # fp = tp = 0
 def f1(y_true, y_pred):
     # Implement f1 metric
     return 1 # this line will change
@@ -101,7 +113,7 @@ def kfold_indices(n, k=10, seed=42):
 
 folds = kfold_indices(len(df), 10)
 
-k_values = [1, 1, 1]   # test 3 K values - this line will change
+k_values = [2, 3, 5]   # test 3 K values - this line will change
 
 print("\nKNN Classification Results (10-fold CV):\n")
 print("K | Accuracy | F1-score")
@@ -130,3 +142,10 @@ for k in k_values:
         f1s.append(f1(y_test, y_pred))
 
     print(f"{k:2d} |   {np.mean(accs):.3f}   |   {np.mean(f1s):.3f}")
+
+
+
+def confusion_matrix(y_true, y_pred):
+    actual = pd.Series(y_true, name='Actual')
+    pred = pd.Series(y_pred, name='Predicted')
+    return pd.crosstab(actual, pred, rownames=['Actual'], colnames=['Predicted'], margins=True)
