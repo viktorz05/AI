@@ -12,7 +12,7 @@ from q3_helper import (
 DATA_PATH = "car-dataset.tsv"
 
 feature_plan = {
-    "cylinders": "standard",
+    "cylinders": "one-hot",
     "displacement": "standard",
     "horsepower": "standard",
     "weight": "standard",
@@ -22,7 +22,7 @@ feature_plan = {
     "car_name": "drop",
 }
 
-lambda_values = [0.0, 0.0, 0.0]   # test for 3 lambda values
+lambda_values = [0.0, 0.01, 0.1]   # test for 3 lambda values
 MAX_ITER = 20000
 
 def step_size_fn(i): # notice how I defined step size
@@ -41,17 +41,13 @@ folds = kfold_indices(len(df), k=10, seed=42)
 # -----------------------------
 def rmse(y_true, y_pred):
     # Implement rmse metric
-    actual = np.array(y_true)
-    predicted = np.array(y_pred)
-    rmse = np.sqrt(np.mean((actual - predicted) ** 2))
+    rmse = np.sqrt(np.mean((y_true - y_pred) ** 2))
     return rmse
 
 
 def mae(y_true, y_pred):
     # Implement mae metric
-    actual = np.array(y_true)
-    predicted = np.array(y_pred)
-    mae = np.mean(np.abs((actual - predicted)))
+    mae = np.mean(np.abs((y_true - y_pred)))
     return mae
 
 print("\nRidge Regression (SGD) — 10-fold CV\n")

@@ -91,7 +91,7 @@ def make_ridge_J_dJ(lam):
         trainLoss = 0.5 * (residual ** 2)
         
         reg = (lam / 2) * np.sum(w[1:, :] ** 2)
-        return float(trainLoss + reg)
+        return (trainLoss + reg).item()
 
     def dJ(Xi, yi, w): # the function will change
 

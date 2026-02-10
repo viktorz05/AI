@@ -25,7 +25,7 @@ y = (df["mpg"].astype(float) >= MPG_THRESHOLD).astype(int).to_numpy()
 # 3) Preprocessing
 # -----------------------------
 feature_plan = { # change the features preporcessing based on your answer to Q1.b
-    "cylinders": "one-hot",
+    "cylinders": "standard",
     "displacement": "standard",
     "horsepower": "standard",
     "weight": "standard",
@@ -36,21 +36,6 @@ feature_plan = { # change the features preporcessing based on your answer to Q1.
 }
 def distance(x1, x2):
     return np.sqrt(np.sum((x1-x2) ** 2, axis=1))
-
-def confusion_matrix(y_true, y_pred):
-
-    actual = np.array(y_true)
-    predicted = np.array(y_pred)
-
-    labels = np.unique(np.concatenate([actual, predicted]))
-    label_to_idx = {l: i for i, l in enumerate(labels)}
-
-    m = np.zeros((len(labels), len(labels)), dtype=int)
-
-    for a, p in zip(actual, predicted):
-        m[label_to_idx[a], label_to_idx[p]] += 1
-
-    return m
 
 def fit_preprocess(train_df):
     params = {"standard": {}, "onehot": {}}
@@ -110,11 +95,6 @@ def knn_predict(X_train, y_train, X_test, k):
 # 5) Metrics
 # -----------------------------
 def accuracy(y_true, y_pred):
-    
-    # actual = np.array(y_true)
-    # predicted = np.array(y_pred)
-
-    # return (actual == predicted).sum() / float(len(actual))
     return (y_pred == y_true).sum() / float(len(y_true))
     
     
