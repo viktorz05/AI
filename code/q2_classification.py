@@ -25,7 +25,7 @@ y = (df["mpg"].astype(float) >= MPG_THRESHOLD).astype(int).to_numpy()
 # 3) Preprocessing
 # -----------------------------
 feature_plan = { # change the features preporcessing based on your answer to Q1.b
-    "cylinders": "standard",
+    "cylinders": "one-hot",
     "displacement": "standard",
     "horsepower": "standard",
     "weight": "standard",
