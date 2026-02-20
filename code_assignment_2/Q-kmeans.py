@@ -3,22 +3,55 @@ from sklearn import datasets
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 
-def plot_clusters(labels, num_clusters, max_iter):
+def plot_clusters(results):
 
-    fig, ax = plt.subplots(figsize=(6, 4))
-    sc = ax.scatter(x_features, y_features, c=labels, cmap='viridis', s=30)
-    ax.scatter(centers[:, 0], centers[:, 1], s=200, color='red', marker='X', label='Centers')
-    ax.set_title(f'KMeans: {num_clusters} clusters, {max_iter} max_iter')
-    ax.set_xlabel(iris.feature_names[FEATURE_X_INDEX])
-    ax.set_ylabel(iris.feature_names[FEATURE_Y_INDEX])
-    _ = ax.legend(
-    sc.legend_elements()[0], iris.target_names, loc="lower right", title="Classes"
-)
-    out_fname = f'kmeans-{num_clusters}-clusters-{max_iter}-iters.png'
-    plt.savefig(out_fname, bbox_inches='tight')
-    print(f"Saved plot: {out_fname}")
+    fig, axes = plt.subplots(3, 3, figsize=(12, 10))
+    axes = axes.ravel()  # flatten 2x2 grid into 1D array
+
+    for ax, (labels, centers, num_clusters, max_iter, title) in zip(axes, results):
+
+        sc = ax.scatter(
+            x_features,
+            y_features,
+            c=labels,
+            cmap='viridis',
+            s=30
+        )
+
+        ax.scatter(
+            centers[:, 0],
+            centers[:, 1],
+            s=200,
+            color='red',
+            marker='X'
+        )
+
+        ax.set_title(title)
+        _ = ax.legend(
+        sc.legend_elements()[0], iris.target_names, loc="lower right", title="Classes"
+        )
+        ax.set_xlabel(iris.feature_names[FEATURE_X_INDEX])
+        ax.set_ylabel(iris.feature_names[FEATURE_Y_INDEX])
+
+    plt.tight_layout()
+    plt.savefig('kmeans-results.png', bbox_inches='tight')
     plt.show()
     plt.close(fig)
+
+#     fig, ax = plt.subplots(figsize=(6, 4))
+#     sc = ax.scatter(x_features, y_features, c=labels, cmap='viridis', s=30)
+#     ax.scatter(centers[:, 0], centers[:, 1], s=200, color='red', marker='X', label='Centers')
+#     ax.set_title(f'KMeans: {num_clusters} clusters, {max_iter} max_iter')
+#     ax.set_xlabel(iris.feature_names[FEATURE_X_INDEX])
+#     ax.set_ylabel(iris.feature_names[FEATURE_Y_INDEX])
+#     _ = ax.legend(
+#     sc.legend_elements()[0], iris.target_names, loc="lower right", title="Classes"
+# )
+#     out_fname = f'kmeans-{num_clusters}-clusters-{max_iter}-iters.png'
+#     plt.savefig(out_fname, bbox_inches='tight')
+#     print(f"Saved plot: {out_fname}")
+#     plt.show()
+#     plt.close(fig)
 
 # 0. Adjust parameters
 NUM_CLUSTERS = [2, 3, 4]    # Number of clusters for K-Means (Experiment with 2, 3, 4)
@@ -47,6 +80,7 @@ plt.close(fig_og)
 # 3. Implement K-Means Clustering
     # 3.1. Import KMeans from scikit-learn
     # 3.2. Create an instance of KMeans with the specified number of clusters and max_iter
+results = []
 for cluster in NUM_CLUSTERS:
     for iter in MAX_ITER:
         kmeans = KMeans(n_clusters=cluster, max_iter=iter)
@@ -60,7 +94,10 @@ for cluster in NUM_CLUSTERS:
 
             # 4.2. Create a scatter plot of x_feature vs y_feature, colored by the cluster labels
             # 4.3. Use different colors to represent different clusters
-        plot_clusters(labels, cluster, iter)
+        result = (labels, centers, cluster, iter, f"KMeans: {cluster} clusters, {iter} max_iter")
+        results.append(result)
+    
+plot_clusters(results)
     
 
 
